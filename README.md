@@ -15,3 +15,13 @@ Validate: curl POST /assess-release-risk
 
 
 #3
+
+In app.py add GET /anomaly-status/{service}?env=prod.
+Call get_ec2_signals(service, env) for current signals.
+Store first call result in memory dict as baseline.
+Compute delta% per feature: (current-baseline)/baseline.
+Score deltas with model.rule_based_score(deltas).
+Return: anomaly_detected(score>=0.5), delta_score, 
+risk_level, spiked_features[].
+Validate: curl http://localhost:8000/anomaly-status/
+payments-api?env=prod → returns anomaly_detected bool.
